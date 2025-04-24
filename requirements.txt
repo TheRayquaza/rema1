@@ -1,0 +1,14 @@
+pandas
+numpy
+fastapi
+hydra-core
+pydantic
+scikit-learn
+joblib
+pytest
+pytest-cov
+tensorflow
+torch
+matplotlib
+seaborn
+uvicorn[standard]

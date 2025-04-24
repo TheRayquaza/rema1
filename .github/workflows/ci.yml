@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  release:
+    types: [published]
+
+env:
+  DOCKER_REGISTRY: registry.cri.epita.fr/mateo.lelong/nlp1
+  DOCKER_IMAGE: ${{ env.DOCKER_REGISTRY }}/models/generator
+
+jobs:
+  lint-python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install black==23.3.0 mypy
+
+      - name: Run black
+        run: black --check src/
+
+      - name: Run mypy
+        run: mypy src/
+
+  lint-docker:
+    name: Lint Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v2
+        with:
+          dockerfile: Dockerfile
+          ignore: DL3008,DL3015,DL3059
+
+  test-python:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: pytest
+
+  build-docker:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker credentials
+        run: |
+          echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
+
+      - name: Build and push image
+        run: |
+          docker build -t $DOCKER_IMAGE:${{ github.event.release.tag_name }} model
+          docker push $DOCKER_IMAGE:${{ github.event.release.tag_name }}

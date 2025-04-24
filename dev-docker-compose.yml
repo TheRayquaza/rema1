@@ -1,0 +1,17 @@
+services:
+  jupyter:
+    image: quay.io/jupyter/datascience-notebook:python-3.12.9
+    container_name: jupyter-rema
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_TOKEN=token
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks:rw
+      - ./data:/home/jovyan/data:rw
+    deploy:
+      resources:
+        limits:
+          cpus: '5'
+          memory: 5G
