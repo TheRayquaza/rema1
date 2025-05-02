@@ -13,5 +13,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '5'
-          memory: 5G
+          cpus: '8'
+          memory: 7G
+        reservations:
+          devices:
+            - driver: cdi
+              capabilities: [gpu]
+              device_ids:
+                - nvidia.com/gpu=all

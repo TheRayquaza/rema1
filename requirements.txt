@@ -12,3 +12,5 @@ torch
 matplotlib
 seaborn
 uvicorn[standard]
+tensorflow[and-cuda]
+implicit

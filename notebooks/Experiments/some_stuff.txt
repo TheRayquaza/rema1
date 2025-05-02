@@ -1,0 +1,4 @@
+adds or not
+private / public
+upload type
+build parametric engagement score (not just watch ratio)
