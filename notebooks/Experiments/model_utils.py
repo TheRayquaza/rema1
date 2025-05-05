@@ -26,12 +26,14 @@ def build_ground_truth_mean(pivot_matrix: pd.DataFrame):
         ground_truth[user_id] = watched_videos
     return dict(ground_truth)
 
-def normalize_ratings(Y: np.ndarray, R: np.ndarray, axis: int = 1) -> Tuple:
-    Ymean = (np.sum(Y * R, axis=axis) / (np.sum(R, axis=axis) + 1e-12))
-    if axis == 0:
-        Ymean = Ymean.reshape(1, -1)
-        Ynorm = Y - np.multiply(R, Ymean)
-    else:
-        Ymean = Ymean.reshape(-1, 1)
-        Ynorm = Y - np.multiply(R, Ymean)
-    return (Ynorm, Ymean)
+def normalize_ratings(Y, R):
+    Ymean = np.zeros(Y.shape[0])
+    for i in range(Y.shape[0]):
+        if np.sum(R[i, :]) > 0:
+            Ymean[i] = np.sum(Y[i, :] * R[i, :]) / np.sum(R[i, :])
+
+    Ynorm = np.zeros_like(Y)
+    for i in range(Y.shape[0]):
+        Ynorm[i, :] = (Y[i, :] - Ymean[i]) * R[i, :]
+
+    return Ynorm, Ymean

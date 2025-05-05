@@ -1,6 +1,8 @@
 services:
   jupyter:
-    image: quay.io/jupyter/datascience-notebook:python-3.12.9
+    build:
+      context: .
+      dockerfile: DevDockerfile
     container_name: jupyter-rema
     restart: unless-stopped
     ports:
@@ -14,10 +16,4 @@ services:
       resources:
         limits:
           cpus: '8'
-          memory: 7G
-        reservations:
-          devices:
-            - driver: cdi
-              capabilities: [gpu]
-              device_ids:
-                - nvidia.com/gpu=all
+          memory: 13G
