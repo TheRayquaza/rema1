@@ -1,6 +1,8 @@
+from typing import Dict, List, Any
+import numpy as np
 
-def precision_at_k(recommendations: Dict[Any, List[Any]], ground_truth: Dict[Any, List[Any]], k: int) -> float:
-    if not ground_truth:
+def mean_average_precision(recommendations: Dict[int, List[int]], ground_truth: Dict[int, List[int]], k: int) -> float:
+    if ground_truth is None:
         return 0.0
     if k <= 0:
         raise ValueError("k must be a positive integer.")

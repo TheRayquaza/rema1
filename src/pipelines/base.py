@@ -1,19 +1,16 @@
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field
 from typing import Any, Self
 from src.utils.logger import get_logger
 
 class AbstractPipeline(ABC):
     """Abstract class for a data processing pipeline."""
 
-    def __init__(self, config: Any) -> None:
+    def __init__(self, config: Any = None) -> None:
         self.config = config
-        self.logger = get_logger(self.config.name)
-
-    @abstractmethod
-    def load(self : Self) -> Any:
-        """Load data from a source."""
-        pass
+        if self.config != None:
+            self.logger = get_logger(self.config.name)
+        else:
+            self.logger = get_logger(__name__)
 
     @abstractmethod
     def fit(self : Self, X: Any, y: Any) -> Self:
@@ -29,8 +26,3 @@ class AbstractPipeline(ABC):
         """Fit the pipeline and transform the data."""
         self.fit(X, y)
         return self.transform(X, y)
-
-    @abstractmethod
-    def split(self : Self, X: Any, y: Any) -> tuple:
-        """Split data into training and test sets."""
-        pass

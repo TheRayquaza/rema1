@@ -6,9 +6,12 @@ from src.utils.logger import get_logger
 class AbstractModel(ABC):
     """Abstract class for machine learning models."""
 
-    def __init__(self, config: Any) -> None:
+    def __init__(self, config: Any = None) -> None:
         self.config = config
-        self.logger = get_logger(self.config.name)
+        if self.config is not None:
+            self.logger = get_logger(self.config.name)
+        else:
+            self.logger = get_logger(__name__)
         self.model = None
 
     @abstractmethod
