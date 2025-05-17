@@ -8,8 +8,8 @@ from src.models.multinomial import Multinomial
 from src.pipelines.simple import SimplePipeline
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from src.metrics.coverage import Coverage
-from src.metrics.ndcg import NDCG
+from src.metrics.coverage import coverage
+from src.metrics.ndcg import ndcg
 
 models = {
     "multinomial_nb": Multinomial,
